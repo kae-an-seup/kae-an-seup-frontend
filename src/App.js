@@ -1,16 +1,25 @@
-import React from 'react';
-import EyesComponent from './EyesComponent'; 
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import EyesComponent from './EyesComponent';
+import styled from 'styled-components';
 import './App.css';
 
 function App() {
   useEffect(() => {
-    // 첫 번째 권한 요청
-    alert('카메라 접근 권한을 허용하시겠습니까?');
-    
-    // 두 번째 권한 요청
-    alert('사운드 접근 권한을 허용하시겠습니까?');
-  }, []);  // 빈 의존성 배열로 useEffect 내부 코드를 한 번만 실행
+    requestPermissions();
+  }, []);
+
+  const requestPermissions = () => {
+    const permissions = [
+      '카메라 접근 권한을 허용하시겠습니까?',
+      '사운드 접근 권한을 허용하시겠습니까?',
+      '정자세로 앉으면 정확도가 향상됩니다.',
+    ];
+
+    permissions.forEach((permission) => {
+      alert(permission);
+    });
+  };
+
   return (
     <div className="container">
       <h1>캐-안습</h1>
@@ -34,7 +43,7 @@ function Card({ title, description }) {
     <div className="card">
       <div className="card-header">
         <h2>{title}</h2>
-        <ToggleSwitch />
+        <ToggleSwitch isOn={false} /> {/* ToggleSwitch 컴포넌트로 대체하며 isOn prop 전달 */}
       </div>
       <p>{description}</p>
       {title === "눈 깜박임 경고" && <CheckmarkBadge />}
@@ -51,8 +60,40 @@ function CheckmarkBadge() {
   );
 }
 
-function ToggleSwitch() {
-  return <div className="toggle-switch"></div>;
+const ToggleSwitchStyled = styled.div`
+  width: 40px;
+  height: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: relative;
+  background-color: ${(props) => (props.isOn ? '#00cc00' : '#ccc')}; // 색상을 조건부로 설정
+
+  &:after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: ${(props) => (props.isOn ? 'calc(100% - 18px)' : '2px')};
+    display: block;
+    transition: left 0.3s;
+  }
+`;
+
+function ToggleSwitch({ isOn }) {
+  const [toggleState, setToggleState] = useState(isOn); // isOn을 초기 상태로 설정
+
+  const toggleSwitch = () => {
+    setToggleState(!toggleState);
+  };
+
+  return (
+    <ToggleSwitchStyled onClick={toggleSwitch} isOn={toggleState} />
+  );
 }
+
 
 export default App;

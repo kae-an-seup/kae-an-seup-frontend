@@ -4,21 +4,26 @@ import styled from 'styled-components';
 import './App.css';
 
 function App() {
+  const [cameraStream, setCameraStream] = useState(null);
+
   useEffect(() => {
-    requestPermissions();
+    requestCameraPermission();
   }, []);
 
-  const requestPermissions = () => {
-    const permissions = [
-      '카메라 접근 권한을 허용하시겠습니까?',
-      '사운드 접근 권한을 허용하시겠습니까?',
-      '정자세로 앉으면 정확도가 향상됩니다.',
-    ];
-
-    permissions.forEach((permission) => {
-      alert(permission);
-    });
+  const requestCameraPermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      setCameraStream(stream);
+    } catch (error) {
+      console.error('카메라 접근을 허용하지 않음:', error);
+    }
   };
+
+  useEffect(() => {
+    if (cameraStream) {
+      // camera를 사용해서 무언가 하는 것
+    }
+  }, [cameraStream]);
 
   return (
     <div className="container">

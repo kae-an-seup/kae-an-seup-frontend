@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 # kae-an-seup-frontend
 =======
+# Getting Started with Create React App
 
-## 실행
-### `npm run start`
-
+npm run start

@@ -1,16 +1,31 @@
-import React from 'react';
-import EyesComponent from './EyesComponent'; 
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import EyesComponent from './EyesComponent';
+import styled from 'styled-components';
 import './App.css';
+import ToggleSwitch from './Toggle';
 
 function App() {
+  const [cameraStream, setCameraStream] = useState(null);
+
   useEffect(() => {
-    // 첫 번째 권한 요청
-    alert('카메라 접근 권한을 허용하시겠습니까?');
-    
-    // 두 번째 권한 요청
-    alert('사운드 접근 권한을 허용하시겠습니까?');
-  }, []);  // 빈 의존성 배열로 useEffect 내부 코드를 한 번만 실행
+    requestCameraPermission();
+  }, []);
+
+  const requestCameraPermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      setCameraStream(stream);
+    } catch (error) {
+      console.error('카메라 접근을 허용하지 않음:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (cameraStream) {
+      // camera를 사용해서 무언가 하는 것
+    }
+  }, [cameraStream]);
+
   return (
     <div className="container">
       <h1>캐-안습</h1>
@@ -34,7 +49,7 @@ function Card({ title, description }) {
     <div className="card">
       <div className="card-header">
         <h2>{title}</h2>
-        <ToggleSwitch />
+        <ToggleSwitch isOn={false} /> {/* ToggleSwitch 컴포넌트로 대체하며 isOn prop 전달 */}
       </div>
       <p>{description}</p>
       {title === "눈 깜박임 경고" && <CheckmarkBadge />}
@@ -49,10 +64,6 @@ function CheckmarkBadge() {
       <span>경고 음성으로 받기</span>
     </div>
   );
-}
-
-function ToggleSwitch() {
-  return <div className="toggle-switch"></div>;
 }
 
 export default App;
